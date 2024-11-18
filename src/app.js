@@ -1,30 +1,30 @@
-require('dotenv').config();
-
+// src/app.js
 const express = require('express');
-const routes = require('./routes');
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger');
-const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const setupSwagger = require('./config/swagger');
 
-const uri = process.env.MONGODB_URI;
+dotenv.config(); // Load environment variables
+
+connectDB(); // Connect to MongoDB
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB Atlas'))
-    .catch((err) => console.error('Connection error:', err));
-
-// Middleware to parse JSON requests
-app.use(express.json());
-
-// Register API routes
-app.use('/api', routes);
+app.use(express.json()); // Middleware for parsing JSON requests
 
 // Set up Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+setupSwagger(app); // Initialize Swagger UI
 
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/transactions', transactionRoutes);
+app.use('/api', dashboardRoutes);
+
+
+// Start the server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
+    console.log(`Server is running on port ${PORT}`);
 });
