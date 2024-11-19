@@ -1,39 +1,21 @@
-// src/routes/transactionRoutes.js
 const express = require('express');
 const router = express.Router();
 const transactionController = require('../controllers/transactionController');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-const { authenticate } = require('../middlewares/authMiddleware');
+// Retrieve all transactions
+router.get('/', authMiddleware.authenticate, transactionController.getAllTransactions);
 
-/**
- * @swagger
- * /api/transactions/create:
- *   post:
- *     summary: Create a new transaction
- *     description: Creates a new transaction by providing sender, receiver, and amount.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               sender:
- *                 type: string
- *                 format: objectId
- *               receiver:
- *                 type: string
- *                 format: objectId
- *               amount:
- *                 type: number
- *     responses:
- *       201:
- *         description: Transaction created successfully
- *       400:
- *         description: Invalid data
- *       500:
- *         description: Server error
- */
-router.post('/create', authenticate, transactionController.createTransaction);
+// Retrieve a specific transaction
+router.get('/:id', authMiddleware.authenticate, transactionController.getTransactionById);
+
+// Create a new transaction
+router.post('/', authMiddleware.authenticate, transactionController.createTransaction);
+
+// Update an existing transaction
+router.put('/:id', authMiddleware.authenticate, transactionController.updateTransaction);
+
+// Delete a transaction
+router.delete('/:id', authMiddleware.authenticate, transactionController.deleteTransaction);
 
 module.exports = router;

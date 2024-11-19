@@ -4,6 +4,7 @@ const basicAuth = require('express-basic-auth');
 // src/config/swagger.js
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const swaggerDefinition = require('./swaggerDefinition');
 
 
 // Now you can access these variables
@@ -11,28 +12,12 @@ const swaggerUser = process.env.SWAGGER_USER;
 const swaggerPassword = process.env.SWAGGER_PASSWORD;
 
 // Swagger definition
-const swaggerDefinition = {
-    openapi: '3.0.0',
-    info: {
-        title: 'Bank Service API',
-        version: '1.0.0',
-        description: 'API documentation for the Bank Service dashboard',
-        contact: {
-            name: 'Your Name',
-            email: 'your-email@example.com',
-        },
-    },
-    servers: [
-        {
-            url: 'http://localhost:3000/api', // Your API base URL
-        },
-    ],
-};
+
 
 // Options for the swagger-jsdoc
 const options = {
     swaggerDefinition,
-    apis: ['./src/routes/*.js'], // Path to the API routes (for reading JSDoc comments)
+    apis: [],
 };
 
 // Initialize swagger-jsdoc
