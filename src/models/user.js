@@ -9,6 +9,8 @@ const userSchema = new Schema({
     password: { type: String, required: true },
     phone: { type: String, required: true, unique: true },
     isVerified: { type: Boolean, default: false },
+    balance: { type: Number, required: true},
+    name: { type: String, required: true}
 }, { timestamps: true });
 
 // Hash the password before saving
