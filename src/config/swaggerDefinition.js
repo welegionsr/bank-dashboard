@@ -308,6 +308,39 @@ const swaggerDefinition = {
                 },
             },
         },
+        '/auth/token': {
+            post: {
+                summary: 'Verify token',
+                description: 'Checks if a given token is valid.',
+                tags: ['Auth'],
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    token: {
+                                        type: 'string',
+                                    }
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    200: {
+                        description: 'Token is valid',
+                    },
+                    403: {
+                        description: 'Invalid token',
+                    },
+                    500: {
+                        description: 'Server error',
+                    },
+                },
+            },
+        },
         '/transactions': {
             get: {
                 summary: 'Retrieve all transactions',

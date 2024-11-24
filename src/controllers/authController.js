@@ -3,7 +3,6 @@ require('dotenv').config();  // Load environment variables from .env file
 // src/controllers/authController.js
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 
 // Register user
 exports.register = async (req, res) => {
@@ -11,6 +10,7 @@ exports.register = async (req, res) => {
     try {
         const user = new User({ email, password, phone });
         await user.save();
+
         res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
@@ -31,5 +31,23 @@ exports.login = async (req, res) => {
         res.json({ token });
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
+    }
+};
+
+// Token verification
+
+exports.verifyToken = async(req, res) => {
+    const token = req.body.token || req.headers['authorization'];
+
+    if(!token) return res.status(403).json({error: 'Token is required'});
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        res.status(200).json({valid: true, userId: decoded.userId});
+    }
+    catch (err)
+    {
+        res.status(403).json({valid: false, error: 'Invalid or expired token'});
     }
 };
