@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    environment:
+      - MONGODB_URI=mongodb+srv://segev:Segev1603@cluster0.xqo0g.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - JWT_SECRET=b7d354f02550970b8a1da6325c6251e491d027b3eab20d20593f423fcfcfa75a24e2377a6bf60957e69f6bc6c8338daf40d139f00aba511f9b02645e1917a159e814db5503e148fc678b83a96b5c44ce58ac2145f59746f5e821489f0551a2c9cadf88fd46777f12e0abc0ac88dab0b7421cd01cc7b24e4e7908b9bbd4f9cc6f53ea336f0cbb60485ba45c8e7adb6f0891a45327183730fc2149f3d54074df16ebb5d7d727611deec9c5add167b996d19c23c345f163d389dcaf9c196615d9df332ec4eb1dbc9229286fbbcf763e4a5ffbbc63f9dc4e5bc23a18f22e915df6b98ff767e0d78090ac27b89f2875c5b79e7f763658ee04dafb134d35f49a59b7c5
+    depends_on:
+      - mongo
+    volumes:
+      - .:/usr/src/app
+    command: npm start
+
+  mongo:
+    image: mongo:6
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

@@ -11,8 +11,6 @@ const swaggerDefinition = require('./swaggerDefinition');
 const swaggerUser = process.env.SWAGGER_USER;
 const swaggerPassword = process.env.SWAGGER_PASSWORD;
 
-// Swagger definition
-
 
 // Options for the swagger-jsdoc
 const options = {
