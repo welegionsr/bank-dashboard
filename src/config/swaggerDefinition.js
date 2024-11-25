@@ -42,6 +42,14 @@ const swaggerDefinition = {
                         type: 'boolean',
                         description: 'Indicates if the user has completed email verification',
                     },
+                    balance: {
+                        type: 'number',
+                        description: 'The current balance of the user'
+                    },
+                    name: {
+                        type: 'string',
+                        description: 'The full name of the user'
+                    }
                 },
             },
         },
@@ -99,6 +107,33 @@ const swaggerDefinition = {
                     },
                     500: {
                         description: 'Internal server error',
+                    },
+                },
+            },
+        },
+        '/users/me': {
+            get: {
+                summary: 'Retrieve user details of current user',
+                description: 'Get user details of the currently authenticated user. Requires authentication.',
+                tags: ['Users'],
+                security: [
+                    {
+                        bearerAuth: [],
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: 'Successfully retrieved user details',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/User',
+                                },
+                            },
+                        },
+                    },
+                    401: {
+                        description: 'Unauthorized',
                     },
                 },
             },
@@ -294,6 +329,9 @@ const swaggerDefinition = {
                                         token: {
                                             type: 'string',
                                         },
+                                        userId: {
+                                            type: 'string'
+                                        }
                                     },
                                 },
                             },

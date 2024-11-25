@@ -21,6 +21,24 @@ exports.getUserById = async (req, res) => {
     }
 };
 
+// Get logged-in user
+exports.getCurrentUser = async (req, res) => {
+    const token = req.body.token || req.headers['authorization'];
+
+    if (!token) return res.status(403).json({ error: 'Token is required' });
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(decoded.userId).select('-password');
+
+        res.status(200).json({ valid: true, user });
+    }
+    catch (err) {
+        res.status(403).json({ valid: false, error: 'Invalid or expired token' });
+    }
+};
+
 // Create a new user
 exports.createUser = async (req, res) => {
     const { email, password, phone } = req.body;
