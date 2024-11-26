@@ -6,11 +6,11 @@ const authMiddleware = require('../middlewares/authMiddleware');
 // Retrieve all users
 router.get('/', authMiddleware.authenticate, userController.getAllUsers);
 
-// Retrieve a specific user
-router.get('/:id', authMiddleware.authenticate, userController.getUserById);
-
 // Retrieve logged-in user details
 router.get('/me', authMiddleware.authenticate, userController.getCurrentUser);
+
+// Retrieve a specific user
+router.get('/:id', authMiddleware.authenticate, userController.getUserById);
 
 // Create a new user
 router.post('/', userController.createUser);

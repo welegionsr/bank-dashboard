@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const User = require('../models/user');
 
 // Get all users
@@ -23,18 +24,28 @@ exports.getUserById = async (req, res) => {
 
 // Get logged-in user
 exports.getCurrentUser = async (req, res) => {
-    const token = req.body.token || req.headers['authorization'];
+    
+    console.log("Decoded user ID:", req.user?.userId);
 
-    if (!token) return res.status(403).json({ error: 'Token is required' });
+    const userId = req.user?.userId;
+    // check if the userId is in a valid format
+    if (!mongoose.Types.ObjectId.isValid(userId)) 
+    {
+        console.error("Invalid user ID format:", userId);
+        return res.status(400).json({ error: 'Invalid user ID format.' });
+    }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        const user = await User.findById(decoded.userId).select('-password');
-
+        const user = await User.findById(userId).select('-password');
+        if (!user)
+        {
+            console.error("User not found:", userId);
+            return res.status(404).json({ error: 'User not found' });
+        }
         res.status(200).json({ valid: true, user });
     }
     catch (err) {
+        console.error("Error fetching user:", err.message);
         res.status(403).json({ valid: false, error: 'Invalid or expired token' });
     }
 };

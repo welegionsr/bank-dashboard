@@ -39,7 +39,7 @@ exports.login = async (req, res) => {
 
 // Token verification
 
-exports.verifyToken = async(req, res) => {
+exports.verifyToken = (req, res) => {
     const token = req.body.token || req.headers['authorization'];
 
     if(!token) return res.status(403).json({error: 'Token is required'});

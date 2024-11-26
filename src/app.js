@@ -21,7 +21,7 @@ setupSwagger(app); // Initialize Swagger UI
 
 app.use(cors({
     origin: 'http://localhost:3000', // Or '*' for any origin (less secure)
-    methods: ['POST', 'GET', 'PUT', 'DELETE'],
+    methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
     credentials: true // If you're using cookies or auth headers
 }));
 
@@ -31,9 +31,14 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api', dashboardRoutes);
 app.use('/api/users', userRoutes);
 
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error("Unhandled error:", err.message);
+    res.status(500).json({ error: 'Internal server error.' });
+});
 
 // Start the server
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3003;
 app.listen(PORT, '0.0.0.0',  () => {
     console.log(`Server is running on port ${PORT}`);
 });
