@@ -259,7 +259,7 @@ const swaggerDefinition = {
         '/auth/register': {
             post: {
                 summary: 'Register a new user',
-                description: 'Registers a new user by providing email, password, and phone number.',
+                description: 'Registers a new user by providing the required fields.',
                 tags: ['Auth'],
                 requestBody: {
                     required: true,
@@ -277,14 +277,20 @@ const swaggerDefinition = {
                                     phone: {
                                         type: 'string',
                                     },
+                                    name: {
+                                        type: 'string'
+                                    },
+                                    balance: {
+                                        type: 'number'
+                                    },
                                 },
                             },
                         },
                     },
                 },
                 responses: {
-                    201: {
-                        description: 'User successfully registered',
+                    200: {
+                        description: 'Verification email sent to user',
                     },
                     400: {
                         description: 'Invalid data',
@@ -372,6 +378,51 @@ const swaggerDefinition = {
                     },
                     403: {
                         description: 'Invalid token',
+                    },
+                    500: {
+                        description: 'Server error',
+                    },
+                },
+            },
+        },
+        '/auth/verify': {
+            post: {
+                summary: 'Verify user after registration',
+                description: 'Verify the code sent to the user by email to complete the registration process.',
+                tags: ['Auth'],
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    email: {
+                                        type: 'string',
+                                    },
+                                    verificationCode: {
+                                        type: 'string'
+                                    }
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    200: {
+                        description: 'Code is valid',
+                    },
+                    400: {
+                        description: 'Code and/or email missing'
+                    },
+                    401 : {
+                        description: 'Verification code has expired'
+                    },
+                    403: {
+                        description: 'Invalid code',
+                    },
+                    404: {
+                        description: 'Email not found'
                     },
                     500: {
                         description: 'Server error',

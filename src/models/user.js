@@ -10,7 +10,9 @@ const userSchema = new Schema({
     phone: { type: String, required: true, unique: true },
     isVerified: { type: Boolean, default: false },
     balance: { type: Number, required: true},
-    name: { type: String, required: true}
+    name: { type: String, required: true},
+    verificationCode: {type: String, required: true},
+    codeExpiry: {type: Date, required: true}
 }, { timestamps: true });
 
 // Hash the password before saving
@@ -24,6 +26,11 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
+
+userSchema.methods.compareVerification = async function(candidateCode)
+{
+    return (this.verificationCode === candidateCode);
+}
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
