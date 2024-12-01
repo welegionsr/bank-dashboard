@@ -346,6 +346,9 @@ const swaggerDefinition = {
                     400: {
                         description: 'Invalid credentials',
                     },
+                    403: {
+                        description: 'Account not verified'
+                    },
                     500: {
                         description: 'Server error',
                     },

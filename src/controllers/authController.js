@@ -35,6 +35,16 @@ exports.login = async (req, res) => {
         const isMatch = await user.comparePassword(password);
         if (!isMatch) return res.status(400).json({ error: 'Invalid email or password' });
 
+        // check if user is verified, and if not, start verification
+        if (!user.isVerified)
+        {
+            // send email
+            const verificationCode = generateVerificationCode();
+            await sendVerificationEmail(email, verificationCode);
+            
+            res.status(403).json({error: 'account is not verified!'});
+        }
+        
         const userId = user._id;
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '20m' });
         res.json({ token, userId });
@@ -91,7 +101,7 @@ exports.verifyUser = async (req, res) => {
         user.codeExpiry = undefined;
 
         await user.save();
-        
+
         res.status(200).json({ message: 'Verification successful' });
     }
     catch (err)
