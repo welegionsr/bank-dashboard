@@ -38,16 +38,25 @@ exports.login = async (req, res) => {
         // check if user is verified, and if not, start verification
         if (!user.isVerified)
         {
-            // send email
             const verificationCode = generateVerificationCode();
+
+            // update code expiration
+            user.codeExpiry = Date.now() + 10 * 60 * 1000;
+            user.verificationCode = verificationCode;
+
+            await user.save();
+
+            // send email
             await sendVerificationEmail(email, verificationCode);
-            
+
             res.status(403).json({error: 'account is not verified!'});
         }
-        
-        const userId = user._id;
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '20m' });
-        res.json({ token, userId });
+        else
+        {
+            const userId = user._id;
+            const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '20m' });
+            res.json({ token, userId });
+        }
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }

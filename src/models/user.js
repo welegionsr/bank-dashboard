@@ -11,8 +11,8 @@ const userSchema = new Schema({
     isVerified: { type: Boolean, default: false },
     balance: { type: Number, required: true},
     name: { type: String, required: true},
-    verificationCode: {type: String, required: true},
-    codeExpiry: {type: Date, required: true}
+    verificationCode: {type: String, required: false},
+    codeExpiry: {type: Date, required: false}
 }, { timestamps: true });
 
 // Hash the password before saving

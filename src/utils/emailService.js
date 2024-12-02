@@ -13,9 +13,10 @@ async function sendVerificationEmail(recipientEmail, code) {
         from: '"GoldFront Bank" <no-reply@goldfront.com>',
         to: recipientEmail,
         subject: 'GoldFront Bank - Account Verification',
-        html: `<p>Your verification code is: <strong>${code}</strong></p>`
+        html: `<h2>Hi!</h2><hr/><p style="background: grey;">Your verification code is: <strong>${code}</strong></p>`
     };
 
+    console.log("sending OTP to email: ", recipientEmail, " [OTP Code: ", code, "]");
     return transporter.sendMail(mailOptions);
 }
 

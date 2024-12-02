@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
-const dashboardRoutes = require('./routes/dashboardRoutes');
 const userRoutes = require('./routes/userRoutes');
 const setupSwagger = require('./config/swagger');
 const cors = require('cors');
@@ -28,7 +27,6 @@ app.use(cors({
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
-app.use('/api', dashboardRoutes);
 app.use('/api/users', userRoutes);
 
 // Global error handler
