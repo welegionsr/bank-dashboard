@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json()); // Middleware for parsing JSON requests
 
 // Set up Swagger UI
-setupSwagger(app); // Initialize Swagger UI
+setupSwagger(app); 
 
 app.use(cors({
     origin: 'http://localhost:3000', // Or '*' for any origin (less secure)

@@ -52,6 +52,23 @@ const swaggerDefinition = {
                     }
                 },
             },
+            Transaction: {
+                type: 'object',
+                properties: {
+                    sender: {
+                        type: 'string',
+                        description: 'Unique identifier for the sender',
+                    },
+                    receiver: {
+                        type: 'string',
+                        description: 'Unique identifier for the receiver',
+                    },
+                    amount: {
+                        type: 'number',
+                        description: 'The amount of money that is asked to send',
+                    }
+                },
+            },
         },
     },
     paths: {
@@ -418,7 +435,7 @@ const swaggerDefinition = {
                     400: {
                         description: 'Code and/or email missing'
                     },
-                    401 : {
+                    401: {
                         description: 'Verification code has expired'
                     },
                     403: {
@@ -486,7 +503,10 @@ const swaggerDefinition = {
                         description: 'Transaction created successfully',
                     },
                     400: {
-                        description: 'Bad request',
+                        description: 'Bad request (either tried to send to themselves, or amount was 0, or tried to send amount larger than their balance)',
+                    },
+                    404: {
+                        description: 'Either sender or receiver do not exist',
                     },
                     500: {
                         description: 'Internal server error',
