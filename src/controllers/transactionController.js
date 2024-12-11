@@ -89,3 +89,41 @@ exports.deleteTransaction = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+
+// Get all transactions of a specific user
+exports.getTransactionsByUser = async (req, res) => {
+    const {userEmail} = req.params;
+
+    try {
+
+        // Validate the email parameter
+        if (!userEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(userEmail)) {
+            return res.status(400).json({ error: 'Invalid or missing email parameter' });
+        }
+        
+        const user = await User.findOne({email: userEmail});
+    
+        if (!user) return res.status(404).json({ error: 'No user exists with the provided email'});
+    
+        const transactions = await Transaction.find({
+            $or: [
+                { sender: user._id },
+                { receiver: user._id }
+            ]
+        })
+        .sort({ date: -1 }) // Sort transactions by date (newest first)
+        .populate('sender', 'name email') 
+        .populate('receiver', 'name email');
+
+        if (transactions.length === 0) {
+            return res.status(404).json({ error: 'No transactions found for this user' });
+        }
+
+        res.status(200).json({ transactions });
+    }
+    catch(err)
+    {
+        console.error('Error fetching transactions:', err);
+        res.status(500).json({ error: 'An error occurred while fetching transactions' });
+    }
+};
