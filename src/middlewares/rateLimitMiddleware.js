@@ -14,4 +14,17 @@ const verifyLimiter = rateLimit({
     },
 });
 
-module.exports = { verifyLimiter };
+const registerLimiter = rateLimit({
+    windowMs: 5 * 60 * 1000, // 15 minutes window
+    max: 10,                   // Limit each IP to 10 verification attempts per windowMs
+    message: { error: 'Too many registration attempts. Please try again later.' },
+    handler: (req, res) => {
+        // Custom logging when limit is reached
+        console.warn(`Registration rate limit exceeded by IP: ${req.ip}`);
+
+        // Send a custom response
+        res.status(429).json({ error: 'Too many registration attempts. Please try again later.' });
+    },
+});
+
+module.exports = { verifyLimiter, registerLimiter };

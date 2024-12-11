@@ -6,6 +6,9 @@ const authMiddleware = require('../middlewares/authMiddleware');
 // Retrieve all transactions
 router.get('/', authMiddleware.authenticate, transactionController.getAllTransactions);
 
+// Retrieve all transactions of a given user
+router.get('/user/:userEmail', authMiddleware.authenticate, transactionController.getTransactionsByUser);
+
 // Retrieve a specific transaction
 router.get('/:id', authMiddleware.authenticate, transactionController.getTransactionById);
 

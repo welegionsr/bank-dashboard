@@ -514,6 +514,50 @@ const swaggerDefinition = {
                 },
             },
         },
+        '/transactions/user/': {
+            get: {
+                summary: 'Retrieve all transitions of a specified user',
+                description: 'Fetch details of all transactions of a specific user. Requires authentication.',
+                tags: ['Transactions'],
+                security: [
+                    {
+                        bearerAuth: [],
+                    },
+                ],
+                parameters: [
+                    {
+                        name: 'userEmail',
+                        in: 'path',
+                        required: true,
+                        description: 'email of the user to get transactions for',
+                        schema: {
+                            type: 'string',
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: 'Successfully retrieved user transactions',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'array',
+                                    items: {
+                                        $ref: '#/components/schemas/Transaction',
+                                    }
+                                },
+                            },
+                        },
+                    },
+                    401: {
+                        description: 'Unauthorized',
+                    },
+                    404: {
+                        description: 'User or transactions not found',
+                    },
+                },
+            },
+        },
         '/transactions/{id}': {
             get: {
                 summary: 'Retrieve a specific transaction',
