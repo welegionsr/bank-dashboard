@@ -9,7 +9,7 @@ const userSchema = new Schema({
     password: { type: String, required: true },
     phone: { type: String, required: true, unique: true },
     isVerified: { type: Boolean, default: false },
-    balance: { type: Number, required: true},
+    balance: { type: Number, required: true}, // in cents
     name: { type: String, required: true},
     verificationCode: {type: String, required: false},
     codeExpiry: {type: Date, required: false},

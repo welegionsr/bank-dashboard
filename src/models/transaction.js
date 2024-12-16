@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const transactionSchema = new Schema({
     sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    amount: { type: Number, required: true, min: [0, 'Amount cannot be negative'] },
+    amount: { type: Number, required: true, min: [0, 'Amount cannot be negative'] }, // in cents
     date: { type: Date, default: Date.now },
 }, { timestamps: true });
 

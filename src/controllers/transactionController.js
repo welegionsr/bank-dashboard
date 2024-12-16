@@ -61,7 +61,11 @@ exports.createTransaction = async (req, res) => {
 
         await sendUser.save();
         await receiveUser.save();
-        res.status(201).json(transaction);
+
+        // Populate the receiver details
+        const populatedTransaction = await Transaction.findById(transaction.id).populate('receiver');
+
+        res.status(201).json({transaction: populatedTransaction});
     }
     catch (err) {
         res.status(500).json({ error: 'Server error' });
@@ -115,9 +119,6 @@ exports.getTransactionsByUser = async (req, res) => {
         .populate('sender', 'name email') 
         .populate('receiver', 'name email');
 
-        if (transactions.length === 0) {
-            return res.status(404).json({ error: 'No transactions found for this user' });
-        }
 
         res.status(200).json({ transactions });
     }

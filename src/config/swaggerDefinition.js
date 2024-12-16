@@ -514,7 +514,7 @@ const swaggerDefinition = {
                 },
             },
         },
-        '/transactions/user/': {
+        '/transactions/user/{userEmail}': {
             get: {
                 summary: 'Retrieve all transitions of a specified user',
                 description: 'Fetch details of all transactions of a specific user. Requires authentication.',
