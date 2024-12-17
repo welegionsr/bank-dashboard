@@ -13,11 +13,11 @@ router.get('/me', authMiddleware.authenticate, userController.getCurrentUser);
 // retrieve contacts of user
 router.get('/:id/contacts', authMiddleware.authenticate, userController.getUserContacts);
 
-// Retrieve a specific user
-router.get('/:id', authMiddleware.authenticate, userController.getUserById);
-
 // Add contact to a user
 router.post('/:id/contacts', authMiddleware.authenticate, userController.addUserContact);
+
+// Retrieve a specific user
+router.get('/:id', authMiddleware.authenticate, userController.getUserById);
 
 // Create a new user
 router.post('/', registerLimiter, userController.createUser);

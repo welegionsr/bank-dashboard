@@ -86,9 +86,11 @@ exports.deleteUser = async (req, res) => {
 
 // Get all user contacts
 exports.getUserContacts = async (req, res) => {
+    const userId = req.params.id;
+
     try 
     {
-        const user = await User.findById(req.params.id).populate('contacts', 'name email phone');
+        const user = await User.findById(userId).populate('contacts', 'id name email phone');
         if(!user)
         {
             return res.status(404).json({error: 'User not found!'});
@@ -113,6 +115,11 @@ exports.addUserContact = async (req,res) => {
             return res.status(404).json({error: 'User not found'});
         }
 
+        if(user.id === contactId)
+        {
+            return res.status(400).json({ error: 'Not possible to add yourself as a contact!' });
+        }
+
         if(user.contacts.includes(contactId))
         {
             return res.status(400).json({error: 'Contact already exists for this user!'});
@@ -130,15 +137,18 @@ exports.addUserContact = async (req,res) => {
 };
 
 exports.deleteUserContact = async (req, res) => {
+    const userId = req.params.id;
+    const contactId = req.params.contactId;
+
     try
     {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(userId);
         if(!user)
         {
             return res.status(404).json({error: 'User not found!'});
         }
 
-        user.contacts = user.contacts.filter(id => id.toString() !== req.params.id);
+        user.contacts = user.contacts.filter(id => id.toString() !== contactId);
         await user.save();
 
         res.status(200).json({message: 'Successfully removed contact'});
