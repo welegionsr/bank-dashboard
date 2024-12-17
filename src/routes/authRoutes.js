@@ -12,4 +12,6 @@ router.post('/token', authController.verifyToken);
 
 router.post('/verify', verifyLimiter, authController.verifyUser);
 
+router.post('/resend', verifyLimiter, authController.resendVerification);
+
 module.exports = router;

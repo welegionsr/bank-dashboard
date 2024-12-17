@@ -118,4 +118,40 @@ exports.verifyUser = async (req, res) => {
         res.status(500).json({error: 'Server error'});
     }
 
-}
+};
+
+exports.resendVerification = async(req, res) => {
+    const { email } = req.body;
+
+    try
+    {
+        if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+            return res.status(400).json({ error: 'A valid email address is required' });
+        }
+
+        const user = await User.findOne({email});
+        if(!user) return res.status(404).json({error: 'User not found!'});
+
+        if(user.isVerified)
+        {
+            return res.status(400).json({error: 'User already verified!'});
+        }
+
+        const verificationCode = generateVerificationCode();
+
+        // update code expiration
+        user.codeExpiry = Date.now() + 10 * 60 * 1000;
+        user.verificationCode = verificationCode;
+
+        await user.save();
+
+        // send email
+        await sendVerificationEmail(email, verificationCode);
+
+        res.status(200).json({message: 'Verification email resent successfully'});
+    }
+    catch(error)
+    {
+        res.status(500).json({ error: 'Server error' });
+    }
+};

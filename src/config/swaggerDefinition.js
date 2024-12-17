@@ -450,6 +450,42 @@ const swaggerDefinition = {
                 },
             },
         },
+        '/auth/resend': {
+            post: {
+                summary: 'Resend verification code by email',
+                description: 'Resend verification code to the given email address, to be used in cases where the previously send code was invalid or did not arrive.',
+                tags: ['Auth'],
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    email: {
+                                        type: 'string',
+                                    }
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    200: {
+                        description: 'Resent successfully',
+                    },
+                    400: {
+                        description: 'Email not valid, or user already verified!'
+                    },
+                    404: {
+                        description: 'Email not found'
+                    },
+                    500: {
+                        description: 'Server error',
+                    },
+                },
+            },
+        },
         '/transactions': {
             get: {
                 summary: 'Retrieve all transactions',
