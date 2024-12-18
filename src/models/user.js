@@ -28,7 +28,7 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.methods.compareVerification = async function(candidateCode)
+userSchema.methods.compareVerification = function(candidateCode)
 {
     return (this.verificationCode === candidateCode);
 }
