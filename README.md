@@ -1,4 +1,4 @@
-# Bank Dashboard
+# Bank Dashboard - Backend
 
 This project is a backend service for a mock banking application, developed to practice various libraries and tools. It features basic authentication and transaction management.
 Features
