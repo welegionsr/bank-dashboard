@@ -3,8 +3,14 @@
 This project is a backend service for a mock banking application, developed to practice various libraries and tools. It features basic authentication and transaction management.
 ### Features
 
-  - User Authentication: Implements basic user registration and login functionalities.
-  - Transaction Management: Allows users to perform and track simple banking transactions.
+  - User Authentication: Implements user registration and login functionalities with password hashing and JWT-based authentication.
+  - Transaction Management: Allows users to perform and track simple banking transactions, including validation for sender and receiver accounts.
+  - API Documentation: Integrated Swagger UI for detailed API documentation and easy testing of endpoints.
+  - Rate Limiting: Ensures secure and controlled access to the API by limiting the number of requests per client.
+  - Input Validation: Validates incoming data to ensure consistency and security using middleware.
+  - Error Handling: Centralized error handling for better debugging and user feedback.
+  - Environment Configuration: Supports environment-based configuration using .env files.
+  - Docker Support: Provides containerized deployment for easy setup and scalability. 
 
 ## Technologies Used
 
@@ -13,7 +19,9 @@ This project is a backend service for a mock banking application, developed to p
   - MongoDB: NoSQL database for data storage.
   - Mongoose: Object Data Modeling (ODM) library for MongoDB and Node.js.
   - JWT: JSON Web Tokens for authentication.
-  - Docker: Containerization platform for consistent development and deployment.
+  - Swagger UI: API documentation and testing interface.
+  - Rate Limiting: Middleware to control API request rates.
+  - Docker: Containerization platform for consistent development and deployment. 
 
 ## Getting Started
 ### Prerequisites
@@ -60,10 +68,9 @@ Create a .env file in the root directory and add the following:
 
 ## API Endpoints
 
-  - User Registration: POST /api/register
-  - User Login: POST /api/login
-  - Create Transaction: POST /api/transactions
-  - Get Transactions: GET /api/transactions
+  See <server_url>/api-docs/ for the full API specification and swagger features.
+  The swagger interface is intentionally left accessible, as this is a learning project.
+  (In production, you should limit access!).
 
 Note: This project is for practice purposes only and is not intended for production use.
 License
