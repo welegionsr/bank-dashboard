@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const transactionController = require('../controllers/transactionController');
 const authMiddleware = require('../middlewares/authMiddleware');
+const authorizeRoles = require('../middlewares/authorizeRoles');
 
 // Retrieve all transactions
-router.get('/', authMiddleware.authenticate, transactionController.getAllTransactions);
+router.get('/', authMiddleware.authenticate, authorizeRoles(['admin']), transactionController.getAllTransactions);
 
 // Retrieve all transactions of a given user
 router.get('/user/:userEmail', authMiddleware.authenticate, transactionController.getTransactionsByUser);

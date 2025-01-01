@@ -3,9 +3,10 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const { registerLimiter } = require('../middlewares/rateLimitMiddleware');
+const authorizeRoles = require('../middlewares/authorizeRoles');
 
 // Retrieve all users
-router.get('/', authMiddleware.authenticate, userController.getAllUsers);
+router.get('/', authMiddleware.authenticate, authorizeRoles(['admin']), userController.getAllUsers);
 
 // Retrieve logged-in user details
 router.get('/me', authMiddleware.authenticate, userController.getCurrentUser);

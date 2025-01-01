@@ -1,4 +1,3 @@
-// src/middlewares/authMiddleware.js
 const jwt = require('jsonwebtoken');
 
 const authenticate = (req, res, next) => {
@@ -13,7 +12,7 @@ const authenticate = (req, res, next) => {
         // Verify the token using the same JWT_SECRET used when signing the token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         console.log("Token decoded:", decoded);
-        req.user = decoded;  // You can attach user data to the request object
+        req.user = decoded;  // attach user data to the request object
         next();  // Proceed to the next middleware/route handler
     } catch (err) {
         console.error("Token verification failed:", err.message);
@@ -21,4 +20,4 @@ const authenticate = (req, res, next) => {
     }
 };
 
-module.exports = { authenticate };  // Ensure you're exporting the authenticate function
+module.exports = { authenticate };

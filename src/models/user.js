@@ -13,7 +13,8 @@ const userSchema = new Schema({
     name: { type: String, required: true},
     verificationCode: {type: String, required: false},
     codeExpiry: {type: Date, required: false},
-    contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
+    contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    role: { type: String, enum: ['customer', 'admin'], default: 'customer' }
 }, { timestamps: true });
 
 // Hash the password before saving
