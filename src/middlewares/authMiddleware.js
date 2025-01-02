@@ -5,7 +5,10 @@ const authenticate = (req, res, next) => {
 
     if (!token) {
         console.error("No token provided");
-        return res.status(401).json({ error: 'Access denied. No token provided.' });
+        return res.status(401).json({
+            error: 'Access denied. No token provided.',
+            code: 'NO_TOKEN'
+        });
     }
 
     try {
@@ -16,7 +19,17 @@ const authenticate = (req, res, next) => {
         next();  // Proceed to the next middleware/route handler
     } catch (err) {
         console.error("Token verification failed:", err.message);
-        res.status(400).json({ error: 'Invalid token.' });
+        if (err.name === 'TokenExpiredError') {
+            res.status(401).json({
+                error: 'Token has expired.',
+                code: 'SESSION_EXPIRED'
+            });
+        } else {
+            res.status(401).json({
+                error: 'Invalid token.',
+                code: 'INVALID_TOKEN'
+            });
+        }
     }
 };
 

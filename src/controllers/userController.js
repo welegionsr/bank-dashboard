@@ -1,13 +1,47 @@
 const { default: mongoose } = require('mongoose');
 const User = require('../models/user');
 
-// Get all users
-exports.getAllUsers = async (req, res) => {
+// Get all users with sent and received transaction counts
+exports.getAllUsers = async (_req, res) => {
     try {
-        const users = await User.find().select('-password'); // Exclude passwords
+        const users = await User.aggregate([
+            {
+                $lookup: {
+                    from: "transactions", // Name of the transactions collection
+                    localField: "_id",   // Field in the User collection
+                    foreignField: "sender", // Field in the Transactions collection
+                    as: "sentTransactions", // Alias for matched transactions
+                },
+            },
+            {
+                $lookup: {
+                    from: "transactions",
+                    localField: "_id",
+                    foreignField: "receiver",
+                    as: "receivedTransactions",
+                },
+            },
+            {
+                $addFields: {
+                    sentTransactionCount: { $size: "$sentTransactions" },
+                    receivedTransactionCount: { $size: "$receivedTransactions" },
+                },
+            },
+            {
+                $project: {
+                    password: 0,
+                    verificationCode: 0,
+                    codeExpiry: 0,
+                    sentTransactions: 0,
+                    receivedTransactions: 0,
+                },
+            },
+        ]);
+
         res.status(200).json(users);
     } catch (err) {
-        res.status(500).json({ error: 'Server error' });
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
     }
 };
 
