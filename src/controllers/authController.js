@@ -56,21 +56,53 @@ exports.login = async (req, res) => {
         await user.save();
 
 
-        const userId = user._id;
         const token = jwt.sign(
             { userId: user._id, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: (process.env.NODE_ENV === "development") ? '120m' : '20m' }
         );
-        res.json({ token, userId });
+
+        // Set HttpOnly cookies
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 120 * 60 * 1000, // Match token lifespan
+        });
+
+        res.cookie('userId', user._id.toString(), {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 120 * 60 * 1000, // Match token lifespan
+        });
+
+        res.cookie('role', user.role, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 120 * 60 * 1000, // Match token lifespan
+        });
+
+        // Respond without including sensitive data
+        res.json({ message: 'Login successful' });
 
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }
 };
 
-// Token verification
+// Logout user
+exports.logout = (_req, res) => {
+    res.clearCookie('token');
+    res.clearCookie('userId');
+    res.clearCookie('role');
+    res.clearCookie('session_valid');
 
+    res.status(200).json({ message: 'Successfully logged out' });
+}
+
+// Token verification
 exports.verifyToken = (req, res) => {
     const token = req.body.token || req.headers['authorization'];
 
@@ -148,9 +180,57 @@ exports.resendVerification = async (req, res) => {
         // send email
         await sendVerificationEmail(email, verificationCode);
 
-        res.status(200).json({ message: 'Verification email resent successfully' });
+        res.status(200).json({ message: 'Verification email re-sent successfully' });
     }
     catch (error) {
         res.status(500).json({ error: 'Server error' });
+    }
+};
+
+exports.verifySession = async (req, res) => {
+    const token = req.cookies.token;
+    const sessionValid = req.cookies.session_valid === 'true';
+    const role = req.cookies.session_role;
+
+    console.log('[verifySession] Role:', role);
+
+    // If the session cookie is valid, skip token verification and return the cached response
+    if (sessionValid) {
+        return res.status(200).json({ isValid: true, role: role || 'guest' });
+    }
+
+    if (!token) {
+        return res.status(401).json({ isValid: false });
+    }
+
+    try {
+        // Verify token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Extract role from the JWT token or set to 'guest' if not present
+        const userRole = decoded.role || 'guest'; // Default to 'guest' if no role in the token
+
+
+        // Set session validation cookie
+        res.cookie('session_valid', 'true', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 5 * 60 * 1000, // 5 minutes
+            path: '/',
+        });
+
+        res.cookie('session_role', userRole, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 5 * 60 * 1000, // 5 minutes
+            path: '/',
+        });
+        res.setHeader('Cache-Control', 'private, max-age=60'); // Cache for 1 minute (optional)
+
+        return res.status(200).json({ isValid: true, role: userRole });
+    } catch (error) {
+        return res.status(401).json({ isValid: false });
     }
 };

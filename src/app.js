@@ -7,6 +7,7 @@ const transactionRoutes = require('./routes/transactionRoutes');
 const userRoutes = require('./routes/userRoutes');
 const setupSwagger = require('./config/swagger');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 dotenv.config(); // Load environment variables
 
@@ -23,6 +24,8 @@ app.use(cors({
     methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
     credentials: true // If you're using cookies or auth headers
 }));
+
+app.use(cookieParser()); // Middleware for parsing cookies
 
 // Routes
 app.use('/api/auth', authRoutes);

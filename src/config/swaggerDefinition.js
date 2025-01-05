@@ -75,11 +75,12 @@ const swaggerDefinition = {
         '/users': {
             get: {
                 summary: 'Retrieve all users',
-                description: 'Get a list of all users in the system. Requires authentication.',
+                description: 'Get a list of all users in the system. Requires authentication and admin role.',
                 tags: ['Users'],
                 security: [
                     {
                         bearerAuth: [],
+                        role: 'admin'
                     },
                 ],
                 responses: {
@@ -98,6 +99,9 @@ const swaggerDefinition = {
                     },
                     401: {
                         description: 'Unauthorized',
+                    },
+                    403: {
+                        description: 'Forbidden: Admin role required',
                     },
                 },
             },
@@ -550,14 +554,48 @@ const swaggerDefinition = {
                 },
             },
         },
-        '/transactions/user/{userEmail}': {
+        '/transactions/me': {
             get: {
-                summary: 'Retrieve all transitions of a specified user',
-                description: 'Fetch details of all transactions of a specific user. Requires authentication.',
+                summary: 'Retrieve all transactions of logged-in user',
+                description: 'Get a list of all transactions of current user. Requires authentication.',
                 tags: ['Transactions'],
                 security: [
                     {
                         bearerAuth: [],
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: 'Successfully retrieved list of transactions',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'array',
+                                    items: {
+                                        $ref: '#/components/schemas/Transaction',
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    400: {
+                        description: 'Bad Request: Invalid user ID format',
+                    },
+                    500: {
+                        description: 'Server error',
+                    },
+                },
+            },
+        },
+        '/transactions/user/{userEmail}': {
+            get: {
+                summary: 'Retrieve all transitions of a specified user',
+                description: 'Fetch details of all transactions of a specific user. Requires authentication and admin role.',
+                tags: ['Transactions'],
+                security: [
+                    {
+                        bearerAuth: [],
+                        role: 'admin'
                     },
                 ],
                 parameters: [
@@ -587,6 +625,9 @@ const swaggerDefinition = {
                     },
                     401: {
                         description: 'Unauthorized',
+                    },
+                    403: {
+                        description: 'Forbidden: Admin role required',
                     },
                     404: {
                         description: 'User or transactions not found',

@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const Transaction = require('../models/transaction');
 const User = require('../models/user');
 
@@ -28,13 +29,11 @@ exports.createTransaction = async (req, res) => {
 
     const amount = parseInt(req.body.amount);
 
-    if (amount <= 0)
-    {
-        return res.status(400).json({error: 'Not Allowed: amount must be a positive value'});
+    if (amount <= 0) {
+        return res.status(400).json({ error: 'Not Allowed: amount must be a positive value' });
     }
 
-    try 
-    {
+    try {
         const sendUser = await User.findOne({ email: sender });
         if (!sendUser) return res.status(404).json({ error: 'Sender does not exist!' });
 
@@ -46,9 +45,8 @@ exports.createTransaction = async (req, res) => {
             return res.status(400).json({ error: 'Sending money to yourself is not allowed!' });
         }
 
-        if(sendUser.balance < amount)
-        {
-            return res.status(400).json({error: `Not Allowed: User can't send more money than what they have in their balance`});
+        if (sendUser.balance < amount) {
+            return res.status(400).json({ error: `Not Allowed: User can't send more money than what they have in their balance` });
         }
 
         // create transaction in DB
@@ -65,7 +63,7 @@ exports.createTransaction = async (req, res) => {
         // Populate the receiver details
         const populatedTransaction = await Transaction.findById(transaction.id).populate('receiver');
 
-        res.status(201).json({transaction: populatedTransaction});
+        res.status(201).json({ transaction: populatedTransaction });
     }
     catch (err) {
         res.status(500).json({ error: 'Server error' });
@@ -94,9 +92,38 @@ exports.deleteTransaction = async (req, res) => {
     }
 };
 
+// Get transactions of current user
+exports.getCurrentUserTransactions = async (req, res) => {
+    console.log("[getCurrentUserTransactions] ","Decoded user ID:", req.user?.userId);
+
+    const userId = req.user?.userId;
+    // check if the userId is in a valid format
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        console.error("Invalid user ID format:", userId);
+        return res.status(400).json({ error: 'Invalid user ID format.' });
+    }
+
+    try {
+        const transactions = await Transaction.find({
+            $or: [
+                { sender: userId },
+                { receiver: userId }
+            ]
+        })
+            .sort({ date: -1 }) // Sort transactions by date (newest first)
+            .populate('sender', 'name email')
+            .populate('receiver', 'name email');
+
+        res.status(200).json({ transactions });
+    } catch (err) {
+        console.error('Error fetching transactions:', err);
+        res.status(500).json({ error: 'An error occurred while fetching transactions' });
+    }
+};
+
 // Get all transactions of a specific user
 exports.getTransactionsByUser = async (req, res) => {
-    const {userEmail} = req.params;
+    const { userEmail } = req.params;
 
     try {
 
@@ -104,26 +131,25 @@ exports.getTransactionsByUser = async (req, res) => {
         if (!userEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(userEmail)) {
             return res.status(400).json({ error: 'Invalid or missing email parameter' });
         }
-        
-        const user = await User.findOne({email: userEmail});
-    
-        if (!user) return res.status(404).json({ error: 'No user exists with the provided email'});
-    
+
+        const user = await User.findOne({ email: userEmail });
+
+        if (!user) return res.status(404).json({ error: 'No user exists with the provided email' });
+
         const transactions = await Transaction.find({
             $or: [
                 { sender: user._id },
                 { receiver: user._id }
             ]
         })
-        .sort({ date: -1 }) // Sort transactions by date (newest first)
-        .populate('sender', 'name email') 
-        .populate('receiver', 'name email');
+            .sort({ date: -1 }) // Sort transactions by date (newest first)
+            .populate('sender', 'name email')
+            .populate('receiver', 'name email');
 
 
         res.status(200).json({ transactions });
     }
-    catch(err)
-    {
+    catch (err) {
         console.error('Error fetching transactions:', err);
         res.status(500).json({ error: 'An error occurred while fetching transactions' });
     }

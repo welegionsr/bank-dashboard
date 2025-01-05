@@ -4,11 +4,14 @@ const transactionController = require('../controllers/transactionController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const authorizeRoles = require('../middlewares/authorizeRoles');
 
-// Retrieve all transactions
+// Retrieve all transactions (ADMIN ONLY)
 router.get('/', authMiddleware.authenticate, authorizeRoles(['admin']), transactionController.getAllTransactions);
 
-// Retrieve all transactions of a given user
-router.get('/user/:userEmail', authMiddleware.authenticate, transactionController.getTransactionsByUser);
+// Retrieve current user's transactions
+router.get('/me', authMiddleware.authenticate, transactionController.getCurrentUserTransactions);
+
+// Retrieve all transactions of a given user (ADMIN ONLY)
+router.get('/user/:userEmail', authMiddleware.authenticate, authorizeRoles(['admin']), transactionController.getTransactionsByUser);
 
 // Retrieve a specific transaction
 router.get('/:id', authMiddleware.authenticate, transactionController.getTransactionById);
