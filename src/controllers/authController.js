@@ -71,6 +71,7 @@ exports.login = async (req, res) => {
             sameSite: isProduction ? 'none' : 'lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
+            ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
         });
 
         res.cookie('userId', user._id.toString(), {
@@ -79,6 +80,7 @@ exports.login = async (req, res) => {
             sameSite: isProduction ? 'none' : 'lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
+            ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
         });
 
         res.cookie('role', user.role, {
@@ -87,6 +89,7 @@ exports.login = async (req, res) => {
             sameSite: isProduction ? 'none' : 'lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
+            ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
         });
 
         console.log("[Login] user logged in successfully! id: ", user._id.toString());
@@ -196,7 +199,7 @@ exports.resendVerification = async (req, res) => {
 
 exports.verifySession = async (req, res) => {
     console.log('[verifySession] Received cookies:', req.cookies);
-    
+
     const token = req.cookies.token;
     const sessionValid = req.cookies.session_valid === 'true';
     const role = req.cookies.role;
@@ -230,6 +233,7 @@ exports.verifySession = async (req, res) => {
             maxAge: 5 * 60 * 1000, // 5 minutes
             path: '/',
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
+            ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
         });
 
         res.setHeader('Cache-Control', 'private, max-age=60'); // Cache for 1 minute (optional)
