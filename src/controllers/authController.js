@@ -238,6 +238,7 @@ exports.verifySession = async (req, res) => {
 
         return res.status(200).json({ isValid: true, role: userRole });
     } catch (error) {
+        console.error("[verifySession] error: ", error);
         return res.status(401).json({ isValid: false });
     }
 };
