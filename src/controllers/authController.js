@@ -89,6 +89,8 @@ exports.login = async (req, res) => {
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
         });
 
+        console.log("[Login] user logged in successfully! id: ", user._id.toString());
+
         // Respond without including sensitive data
         res.json({ message: 'Login successful' });
 
