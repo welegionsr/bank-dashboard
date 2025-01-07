@@ -20,7 +20,7 @@ app.use(express.json()); // Middleware for parsing JSON requests
 setupSwagger(app); 
 
 app.use(cors({
-    origin: 'http://localhost:3000', // Or '*' for any origin (less secure)
+    origin: process.env.FRONT_DOMAIN, // Or '*' for any origin (less secure)
     methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
     credentials: true // If you're using cookies or auth headers
 }));
