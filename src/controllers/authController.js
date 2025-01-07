@@ -195,7 +195,9 @@ exports.verifySession = async (req, res) => {
     const sessionValid = req.cookies.session_valid === 'true';
     const role = req.cookies.session_role;
 
-    console.log('[verifySession] Role:', role);
+    console.log('[verifySession] Token from cookie:', token);
+    console.log('[verifySession] sessionValid from cookie:', sessionValid);
+    console.log('[verifySession] Role from cookie:', role);
 
     // If the session cookie is valid, skip token verification and return the cached response
     if (sessionValid) {
