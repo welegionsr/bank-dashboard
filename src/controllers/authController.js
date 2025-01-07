@@ -197,7 +197,7 @@ exports.resendVerification = async (req, res) => {
 exports.verifySession = async (req, res) => {
     const token = req.cookies.token;
     const sessionValid = req.cookies.session_valid === 'true';
-    const role = req.cookies.session_role;
+    const role = req.cookies.role;
 
     console.log('[verifySession] Token from cookie:', token);
     console.log('[verifySession] sessionValid from cookie:', sessionValid);
@@ -230,14 +230,6 @@ exports.verifySession = async (req, res) => {
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
         });
 
-        res.cookie('session_role', userRole, {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
-            maxAge: 5 * 60 * 1000, // 5 minutes
-            path: '/',
-            ...(isProduction && { partitioned: true }), // Add partitioned only in production
-        });
         res.setHeader('Cache-Control', 'private, max-age=60'); // Cache for 1 minute (optional)
 
         return res.status(200).json({ isValid: true, role: userRole });
