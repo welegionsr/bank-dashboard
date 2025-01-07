@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const { generateVerificationCode } = require('../utils/codeGenerator');
 const { sendVerificationEmail } = require('../utils/emailService');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 // Register user
 exports.register = async (req, res) => {
     const { email, password, phone, name, balance } = req.body;
@@ -65,26 +67,26 @@ exports.login = async (req, res) => {
         // Set HttpOnly cookies
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
-            partitioned: true,
+            ...(isProduction && { partitioned: true }), // Add partitioned only in production
         });
 
         res.cookie('userId', user._id.toString(), {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
-            partitioned: true,
+            ...(isProduction && { partitioned: true }), // Add partitioned only in production
         });
 
         res.cookie('role', user.role, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
-            partitioned: true,
+            ...(isProduction && { partitioned: true }), // Add partitioned only in production
         });
 
         // Respond without including sensitive data
@@ -219,20 +221,20 @@ exports.verifySession = async (req, res) => {
         // Set session validation cookie
         res.cookie('session_valid', 'true', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 5 * 60 * 1000, // 5 minutes
             path: '/',
-            partitioned: true,
+            ...(isProduction && { partitioned: true }), // Add partitioned only in production
         });
 
         res.cookie('session_role', userRole, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 5 * 60 * 1000, // 5 minutes
             path: '/',
-            partitioned: true,
+            ...(isProduction && { partitioned: true }), // Add partitioned only in production
         });
         res.setHeader('Cache-Control', 'private, max-age=60'); // Cache for 1 minute (optional)
 
