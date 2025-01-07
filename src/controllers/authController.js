@@ -66,21 +66,21 @@ exports.login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'none',
             maxAge: 120 * 60 * 1000, // Match token lifespan
         });
 
         res.cookie('userId', user._id.toString(), {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'none',
             maxAge: 120 * 60 * 1000, // Match token lifespan
         });
 
         res.cookie('role', user.role, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'none',
             maxAge: 120 * 60 * 1000, // Match token lifespan
         });
 
@@ -215,7 +215,7 @@ exports.verifySession = async (req, res) => {
         res.cookie('session_valid', 'true', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: 'none',
             maxAge: 5 * 60 * 1000, // 5 minutes
             path: '/',
         });
@@ -223,7 +223,7 @@ exports.verifySession = async (req, res) => {
         res.cookie('session_role', userRole, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: 'none',
             maxAge: 5 * 60 * 1000, // 5 minutes
             path: '/',
         });
