@@ -14,7 +14,6 @@ const authenticate = (req, res, next) => {
     try {
         // Verify the token using the same JWT_SECRET used when signing the token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Token decoded:", decoded);
         req.user = decoded;  // attach user data to the request object
         next();  // Proceed to the next middleware/route handler
     } catch (err) {

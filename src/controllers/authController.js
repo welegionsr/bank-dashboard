@@ -195,6 +195,8 @@ exports.resendVerification = async (req, res) => {
 };
 
 exports.verifySession = async (req, res) => {
+    console.log('[verifySession] Received cookies:', req.cookies);
+    
     const token = req.cookies.token;
     const sessionValid = req.cookies.session_valid === 'true';
     const role = req.cookies.role;
