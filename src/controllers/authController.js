@@ -68,6 +68,7 @@ exports.login = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'none',
             maxAge: 120 * 60 * 1000, // Match token lifespan
+            partitioned: true,
         });
 
         res.cookie('userId', user._id.toString(), {
@@ -75,6 +76,7 @@ exports.login = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'none',
             maxAge: 120 * 60 * 1000, // Match token lifespan
+            partitioned: true,
         });
 
         res.cookie('role', user.role, {
@@ -82,6 +84,7 @@ exports.login = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'none',
             maxAge: 120 * 60 * 1000, // Match token lifespan
+            partitioned: true,
         });
 
         // Respond without including sensitive data
@@ -218,6 +221,7 @@ exports.verifySession = async (req, res) => {
             sameSite: 'none',
             maxAge: 5 * 60 * 1000, // 5 minutes
             path: '/',
+            partitioned: true,
         });
 
         res.cookie('session_role', userRole, {
@@ -226,6 +230,7 @@ exports.verifySession = async (req, res) => {
             sameSite: 'none',
             maxAge: 5 * 60 * 1000, // 5 minutes
             path: '/',
+            partitioned: true,
         });
         res.setHeader('Cache-Control', 'private, max-age=60'); // Cache for 1 minute (optional)
 
