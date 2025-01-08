@@ -71,7 +71,7 @@ exports.login = async (req, res) => {
             sameSite: isProduction ? 'None' : 'Lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
-            ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
+            ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
         });
 
         res.cookie('userId', user._id.toString(), {
@@ -80,7 +80,7 @@ exports.login = async (req, res) => {
             sameSite: isProduction ? 'None' : 'Lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
-            ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
+            ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
         });
 
         res.cookie('role', user.role, {
@@ -89,7 +89,7 @@ exports.login = async (req, res) => {
             sameSite: isProduction ? 'None' : 'Lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
-            ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
+            ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
         });
 
         console.log("[Login] user logged in successfully! id: ", user._id.toString());
@@ -108,7 +108,7 @@ exports.logout = (_req, res) => {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'None' : 'Lax',
-        ...(isProduction && { domain: '.up.railway.app' }),
+        ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }),
         ...(isProduction && { partitioned: true }), // Include if partitioned cookies are used
     });
 
@@ -116,7 +116,7 @@ exports.logout = (_req, res) => {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'None' : 'Lax',
-        ...(isProduction && { domain: '.up.railway.app' }),
+        ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }),
         ...(isProduction && { partitioned: true }),
     });
 
@@ -124,7 +124,7 @@ exports.logout = (_req, res) => {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'None' : 'Lax',
-        ...(isProduction && { domain: '.up.railway.app' }),
+        ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }),
         ...(isProduction && { partitioned: true }),
     });
 
@@ -132,7 +132,7 @@ exports.logout = (_req, res) => {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'None' : 'Lax',
-        ...(isProduction && { domain: '.up.railway.app' }),
+        ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }),
         ...(isProduction && { partitioned: true }),
     });
 
@@ -262,7 +262,7 @@ exports.verifySession = async (req, res) => {
             maxAge: 5 * 60 * 1000, // 5 minutes
             path: '/',
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
-            ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
+            ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
         });
 
         res.setHeader('Cache-Control', 'private, max-age=60'); // Cache for 1 minute (optional)
