@@ -19,10 +19,29 @@ app.use(express.json()); // Middleware for parsing JSON requests
 // Set up Swagger UI
 setupSwagger(app); 
 
+// Set up CORS
+
+const allowedOrigins = [
+    process.env.FRONT_DOMAIN,
+    'https://bank-dashboard-frontend-rho.vercel.app'
+];
+
 app.use(cors({
-    origin: process.env.FRONT_DOMAIN, // Or '*' for any origin (less secure)
+    origin: (origin, callback) => {
+        
+        // Allow Postman for testing purposes
+        if (!origin && req.headers['user-agent']?.includes('PostmanRuntime')) {
+            return callback(null, true);
+        }
+
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true); // Origin is allowed
+        } else {
+            callback(new Error('Not allowed by CORS')); // Origin is not allowed
+        }
+    },
     methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true // If you're using cookies or auth headers
+    credentials: true, // for allowing cookies in requests
 }));
 
 app.use(cookieParser()); // Middleware for parsing cookies
