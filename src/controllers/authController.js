@@ -102,15 +102,44 @@ exports.login = async (req, res) => {
     }
 };
 
-// Logout user
 exports.logout = (_req, res) => {
-    res.clearCookie('token');
-    res.clearCookie('userId');
-    res.clearCookie('role');
-    res.clearCookie('session_valid');
+
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'None' : 'Lax',
+        ...(isProduction && { domain: '.up.railway.app' }),
+        ...(isProduction && { partitioned: true }), // Include if partitioned cookies are used
+    });
+
+    res.clearCookie('userId', {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'None' : 'Lax',
+        ...(isProduction && { domain: '.up.railway.app' }),
+        ...(isProduction && { partitioned: true }),
+    });
+
+    res.clearCookie('role', {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'None' : 'Lax',
+        ...(isProduction && { domain: '.up.railway.app' }),
+        ...(isProduction && { partitioned: true }),
+    });
+
+    res.clearCookie('session_valid', {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'None' : 'Lax',
+        ...(isProduction && { domain: '.up.railway.app' }),
+        ...(isProduction && { partitioned: true }),
+    });
+
+    console.log("[Logout] user successfully logged out, all cookies erased.");
 
     res.status(200).json({ message: 'Successfully logged out' });
-}
+};
 
 // Token verification
 exports.verifyToken = (req, res) => {
