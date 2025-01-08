@@ -92,6 +92,17 @@ exports.login = async (req, res) => {
             ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
         });
 
+        // Set session validation cookie
+        res.cookie('session_valid', 'true', {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? 'None' : 'Lax',
+            maxAge: 5 * 60 * 1000, // 5 minutes
+            path: '/',
+            ...(isProduction && { partitioned: true }), // Add partitioned only in production
+            ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
+        });
+
         console.log("[Login] user logged in successfully! id: ", user._id.toString());
 
         // Respond without including sensitive data
