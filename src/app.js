@@ -23,12 +23,11 @@ setupSwagger(app);
 
 const allowedOrigins = [
     process.env.FRONT_DOMAIN,
-    'https://bank-dashboard-frontend-rho.vercel.app'
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
-        
+
         // Allow Postman for testing purposes
         if (!origin && req.headers['user-agent']?.includes('PostmanRuntime')) {
             return callback(null, true);
