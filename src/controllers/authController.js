@@ -68,7 +68,7 @@ exports.login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
+            sameSite: isProduction ? 'None' : 'Lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
             ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
@@ -77,7 +77,7 @@ exports.login = async (req, res) => {
         res.cookie('userId', user._id.toString(), {
             httpOnly: true,
             secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
+            sameSite: isProduction ? 'None' : 'Lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
             ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
@@ -86,7 +86,7 @@ exports.login = async (req, res) => {
         res.cookie('role', user.role, {
             httpOnly: true,
             secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
+            sameSite: isProduction ? 'None' : 'Lax',
             maxAge: 120 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
             ...(isProduction && { domain: '.up.railway.app' }), // Add domain only in production
@@ -229,7 +229,7 @@ exports.verifySession = async (req, res) => {
         res.cookie('session_valid', 'true', {
             httpOnly: true,
             secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
+            sameSite: isProduction ? 'None' : 'Lax',
             maxAge: 5 * 60 * 1000, // 5 minutes
             path: '/',
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
