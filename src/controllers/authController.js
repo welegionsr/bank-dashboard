@@ -1,6 +1,5 @@
 require('dotenv').config();  // Load environment variables from .env file
 
-// src/controllers/authController.js
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const { generateVerificationCode } = require('../utils/codeGenerator');

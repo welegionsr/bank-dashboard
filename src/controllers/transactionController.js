@@ -1,6 +1,7 @@
 const { default: mongoose } = require('mongoose');
 const Transaction = require('../models/transaction');
 const User = require('../models/user');
+const Notification = require('../models/notification');
 
 // Get all transactions
 exports.getAllTransactions = async (_req, res) => {
@@ -60,12 +61,24 @@ exports.createTransaction = async (req, res) => {
         await sendUser.save();
         await receiveUser.save();
 
+        // Create a notification for the receiving user
+        const notificationMessage = `You received $${amount / 100} from ${sendUser.name}`;
+        const notification = new Notification({
+            userId: receiveUser.id,
+            message: notificationMessage,
+            type: 'transaction',
+            isRead: false
+        });
+
+        await notification.save();
+
         // Populate the receiver details
         const populatedTransaction = await Transaction.findById(transaction.id).populate('receiver');
 
         res.status(201).json({ transaction: populatedTransaction });
     }
     catch (err) {
+        console.error("[createTransaction] error: ", err);
         res.status(500).json({ error: 'Server error' });
     }
 };

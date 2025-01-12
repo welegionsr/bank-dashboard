@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const userRoutes = require('./routes/userRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 const setupSwagger = require('./config/swagger');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -49,6 +50,7 @@ app.use(cookieParser()); // Middleware for parsing cookies
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
