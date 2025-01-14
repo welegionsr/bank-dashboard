@@ -26,23 +26,37 @@ const allowedOrigins = [
     process.env.FRONT_DOMAIN,
 ];
 
-app.use(cors({
-    origin: (origin, callback) => {
+app.use((req, res, next) => {
+    console.log('Request Origin:', req.headers['origin']);
+    console.log('Request Cookies:', req.headers['cookie']);
+    cors({
+        origin: (origin, callback) => {
+            // Allow Postman for testing purposes
+            if (!origin && req.headers['user-agent']?.includes('PostmanRuntime')) {
+                return callback(null, true);
+            }
 
-        // Allow Postman for testing purposes
-        if (!origin && req.headers['user-agent']?.includes('PostmanRuntime')) {
-            return callback(null, true);
-        }
+            if (allowedOrigins.includes(origin)) {
+                callback(null, true); // Origin is allowed
+            } else {
+                callback(new Error('Not allowed by CORS')); // Origin is not allowed
+            }
+        },
+        methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
+        credentials: true, // for allowing cookies in requests
+    })(req, res, next);
+});
 
-        if (allowedOrigins.includes(origin)) {
-            callback(null, true); // Origin is allowed
-        } else {
-            callback(new Error('Not allowed by CORS')); // Origin is not allowed
-        }
-    },
-    methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true, // for allowing cookies in requests
-}));
+// const corsOptions = {
+//     origin: (origin, callback) => {
+//         // Allow all origins temporarily for debugging
+//         callback(null, true);
+//     },
+//     methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
+//     credentials: true, // allow cookies
+// };
+
+// app.use(cors(corsOptions));
 
 app.use(cookieParser()); // Middleware for parsing cookies
 
