@@ -60,7 +60,7 @@ exports.login = async (req, res) => {
         const token = jwt.sign(
             { userId: user._id, role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: (process.env.NODE_ENV === "development") ? '120m' : '20m' }
+            { expiresIn: '30m' }
         );
 
         // Set HttpOnly cookies
@@ -68,7 +68,7 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'None' : 'Lax',
-            maxAge: 120 * 60 * 1000, // Match token lifespan
+            maxAge: 30 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
             ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
         });
@@ -77,7 +77,7 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'None' : 'Lax',
-            maxAge: 120 * 60 * 1000, // Match token lifespan
+            maxAge: 30 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
             ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
         });
@@ -86,7 +86,7 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'None' : 'Lax',
-            maxAge: 120 * 60 * 1000, // Match token lifespan
+            maxAge: 30 * 60 * 1000, // Match token lifespan
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
             ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
         });
@@ -96,7 +96,7 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'None' : 'Lax',
-            maxAge: 5 * 60 * 1000, // 5 minutes
+            maxAge: 30 * 60 * 1000, // Match token lifespan
             path: '/',
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
             ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
@@ -269,7 +269,7 @@ exports.verifySession = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'None' : 'Lax',
-            maxAge: 5 * 60 * 1000, // 5 minutes
+            maxAge: 30 * 60 * 1000, // 30 minutes (same as token)
             path: '/',
             ...(isProduction && { partitioned: true }), // Add partitioned only in production
             ...(isProduction && { domain: process.env.DEPLOY_DOMAIN }), // Add domain only in production
