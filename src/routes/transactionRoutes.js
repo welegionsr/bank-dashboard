@@ -3,6 +3,8 @@ const router = express.Router();
 const transactionController = require('../controllers/transactionController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const authorizeRoles = require('../middlewares/authorizeRoles');
+const validate = require('../middlewares/validate');
+const { transactionCreateSchema } = require('../validations/transactionValidations');
 
 // Retrieve all transactions (ADMIN ONLY)
 router.get('/', authMiddleware.authenticate, authorizeRoles(['admin']), transactionController.getAllTransactions);
@@ -17,7 +19,7 @@ router.get('/user/:userEmail', authMiddleware.authenticate, authorizeRoles(['adm
 router.get('/:id', authMiddleware.authenticate, transactionController.getTransactionById);
 
 // Create a new transaction
-router.post('/', authMiddleware.authenticate, transactionController.createTransaction);
+router.post('/', authMiddleware.authenticate, validate(transactionCreateSchema), transactionController.createTransaction);
 
 // Update an existing transaction
 router.put('/:id', authMiddleware.authenticate, transactionController.updateTransaction);
