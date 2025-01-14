@@ -47,16 +47,6 @@ app.use((req, res, next) => {
     })(req, res, next);
 });
 
-// const corsOptions = {
-//     origin: (origin, callback) => {
-//         // Allow all origins temporarily for debugging
-//         callback(null, true);
-//     },
-//     methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
-//     credentials: true, // allow cookies
-// };
-
-// app.use(cors(corsOptions));
 
 app.use(cookieParser()); // Middleware for parsing cookies
 
